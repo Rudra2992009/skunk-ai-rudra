@@ -16,14 +16,9 @@ export class App {
   currentYear = new Date().getFullYear();
   theme = signal<'light' | 'dark' | 'system'>('system');
 
-  // Model selector
-  models: ModelOption[] = [
-    { id: 'facebook/opt-125m', name: 'OPT-125M' },
-    { id: 'bigscience/bloom-560m', name: 'BLOOM-560M' },
-    { id: 'gpt2', name: 'GPT-2' },
-    { id: 'bigscience/bloom-1b1', name: 'BLOOM-1.1B' }
-  ];
-  selectedModel: string = this.models[0].id;
+  // Model selector (loaded from config)
+  models: ModelOption[] = [];
+  selectedModel: string = '';
   tokenModalOpen = false;
   tokensInput = '';
 
