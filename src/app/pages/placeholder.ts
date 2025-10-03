@@ -231,7 +231,7 @@ export class PlaceholderPageComponent {
     const hfRespAny: any = await this.hf.generate(model, text, { maxTokens: 256 }).catch(() => ({ error: 'HF request failed' }));
     if (hfRespAny && hfRespAny.text) {
       // push assistant response from model
-      const msg: Message = { id: this.msgId++, role: 'assistant', text: hfResp.text, time: this.now() };
+      const msg: Message = { id: this.msgId++, role: 'assistant', text: hfRespAny.text, time: this.now() };
       conv.messages.push(msg);
       conv.updatedAt = this.now();
       this.scrollToBottom();
