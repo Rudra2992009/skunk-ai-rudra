@@ -3,6 +3,7 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HFModelService } from './services/hf-model.service';
+import { HF_MODEL_LIST, HF_TOKENS_FROM_CODE } from './config/hf-config';
 
 interface ModelOption { id: string; name: string; }
 
