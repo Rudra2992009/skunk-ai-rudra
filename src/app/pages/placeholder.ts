@@ -275,21 +275,21 @@ export class PlaceholderPageComponent {
     this.isTyping = true;
     this.scrollToBottom();
 
-    const result = await scrapeUrl(url).catch((e) => ({ error: String(e) }));
+    const resultAny: any = await scrapeUrl(url).catch((e) => ({ error: String(e) }));
 
     // remove the last system fetching message
     const lastIndex = conv.messages.findIndex((m) => m.role === 'system' && m.text.startsWith('Fetching content'));
     if (lastIndex >= 0) conv.messages.splice(lastIndex, 1);
 
-    if (result.error) {
-      conv.messages.push({ id: this.msgId++, role: 'assistant', text: `Unable to fetch URL: ${result.error}`, time: this.now() });
+    if (resultAny?.error) {
+      conv.messages.push({ id: this.msgId++, role: 'assistant', text: `Unable to fetch URL: ${resultAny.error}`, time: this.now() });
       this.isTyping = false;
       this.scrollToBottom();
       return;
     }
 
-    const title = result.title || url;
-    const content = result.text || '';
+    const title = resultAny?.title || url;
+    const content = resultAny?.text || '';
 
     // If model unavailable, we create a local summary from the content
     const summary = this.localSummarize(content || `Content could not be extracted from ${url}`);
