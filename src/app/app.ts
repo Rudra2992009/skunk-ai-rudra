@@ -8,7 +8,7 @@ interface ModelOption { id: string; name: string; }
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, FormsModule, (await import('@angular/common')).CommonModule],
+  imports: [RouterOutlet, RouterLink, FormsModule, CommonModule],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
