@@ -47,6 +47,11 @@ export class App {
 
   get tokens() { return this.hf.getTokens(); }
 
+  // Drawer (hamburger) state
+  drawerOpen = false;
+  toggleDrawer() { this.drawerOpen = !this.drawerOpen; }
+  closeDrawer() { this.drawerOpen = false; }
+
   addToken() {
     const v = this.tokensInput.trim();
     if (!v) return;
