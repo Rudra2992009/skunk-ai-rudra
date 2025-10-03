@@ -77,21 +77,4 @@ export class App {
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     document.documentElement.classList.toggle('dark', prefersDark);
   }
-
-  setTheme(mode: 'light' | 'dark' | 'system') {
-    this.theme.set(mode);
-    localStorage.setItem('theme', mode);
-    if (mode === 'system') return this.applySystemTheme();
-    document.documentElement.classList.toggle('dark', mode === 'dark');
-  }
-
-  toggleTheme() {
-    const isDark = document.documentElement.classList.contains('dark');
-    this.setTheme(isDark ? 'light' : 'dark');
-  }
-
-  private applySystemTheme() {
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    document.documentElement.classList.toggle('dark', prefersDark);
-  }
 }
