@@ -149,7 +149,7 @@ export class PlaceholderPageComponent {
   conversations: Conversation[] = [];
   activeConversationId: number | null = null;
 
-  constructor() {
+  constructor(private hf: HFModelService) {
     // seed with one conversation
     const now = this.now();
     const conv: Conversation = {
