@@ -24,6 +24,19 @@ export class App {
   tokensInput = '';
 
   constructor(private hf: HFModelService) {
+    // load models from config
+    this.models = HF_MODEL_LIST.map(m => ({ id: m.id, name: m.name }));
+    this.selectedModel = localStorage.getItem('hf_selected_model') || (this.models[0]?.id ?? 'gpt2');
+
+    // if tokens provided in code, save them locally (only placeholder by default)
+    const codeTokens = HF_TOKENS_FROM_CODE.filter(Boolean);
+    if (codeTokens.length && !(codeTokens.length === 1 && codeTokens[0] === 'RUDRA_HERE_YOU_PASTE')) {
+      // merge with existing tokens
+      const existing = this.hf.getTokens();
+      const merged = Array.from(new Set([...existing, ...codeTokens]));
+      this.hf.saveTokens(merged);
+    }
+
     const saved = localStorage.getItem('theme') as 'light' | 'dark' | null;
     if (saved) {
       this.setTheme(saved);
