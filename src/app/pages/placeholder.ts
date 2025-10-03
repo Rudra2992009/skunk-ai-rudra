@@ -126,12 +126,8 @@ interface Conversation {
             <div class="px-4 py-4 border-t border-slate-100 dark:border-slate-800/60 bg-white/60 dark:bg-slate-900/30">
               <form (submit)="onSubmit($event)" class="flex items-center gap-3">
                 <div class="flex-1 relative">
-                  <input [(ngModel)]="input" name="prompt" class="w-full rounded-full border border-slate-200/60 dark:border-slate-800/60 bg-white/90 dark:bg-slate-900/30 px-4 py-3 pr-28 focus:ring-2 focus:ring-brand-300 outline-none" placeholder="Ask Skunk AI anything — try: 'Summarize this article in 3 bullets'" />
-                  <div class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                    <button type="button" class="btn-ghost" (click)="quickPrompt('Summarize this article in 3 bullet points')">Summarize</button>
-                    <button type="button" class="btn-ghost" (click)="quickPrompt('Write a polite follow-up email')">Email</button>
-                  </div>
-                </div>
+                  <input [(ngModel)]="input" name="prompt" class="w-full rounded-full border border-slate-200/60 dark:border-slate-800/60 bg-white/90 dark:bg-slate-900/30 px-4 py-3 pr-4 focus:ring-2 focus:ring-brand-300 outline-none" placeholder="Ask Skunk AI anything — try: 'Summarize this article in 3 bullets'" />
+                                  </div>
                 <button type="submit" class="btn-primary" [disabled]="!input || isTyping">Send</button>
               </form>
               <div class="mt-2 text-xs text-slate-400">Tip: Use quick prompts for common tasks. This demo simulates responses locally.</div>
