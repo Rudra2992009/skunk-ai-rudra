@@ -1,9 +1,9 @@
-import { defineConfig } from 'vite';
+import { defineConfig } from "vite";
 
 export default defineConfig(({ mode }) => ({
   server: {
     hmr: {
-      overlay: false
-    }
-  }
+      overlay: false,
+    },
+  },
 }));
