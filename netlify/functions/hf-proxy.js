@@ -1,11 +1,11 @@
 const TIMEOUT_MS = 60000;
 
 exports.handler = async function (event, context) {
-  if (event.httpMethod !== 'POST') {
+  if (event.httpMethod !== "POST") {
     return {
       statusCode: 405,
-      headers: { 'Allow': 'POST' },
-      body: JSON.stringify({ error: 'Method Not Allowed' })
+      headers: { Allow: "POST" },
+      body: JSON.stringify({ error: "Method Not Allowed" }),
     };
   }
 
@@ -13,7 +13,10 @@ exports.handler = async function (event, context) {
     const body = event.body ? JSON.parse(event.body) : {};
     const { model, prompt, parameters } = body;
     if (!model || !prompt) {
-      return { statusCode: 400, body: JSON.stringify({ error: 'Missing model or prompt' }) };
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: "Missing model or prompt" }),
+      };
     }
 
     // Collect tokens from environment variables HF_TOKEN_1..HF_TOKEN_4
@@ -24,7 +27,10 @@ exports.handler = async function (event, context) {
     }
 
     if (tokens.length === 0) {
-      return { statusCode: 500, body: JSON.stringify({ error: 'No HF tokens configured on server' }) };
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: "No HF tokens configured on server" }),
+      };
     }
 
     // Try tokens in sequence until one succeeds.
@@ -35,15 +41,21 @@ exports.handler = async function (event, context) {
         const controller = new AbortController();
         const id = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
-        const res = await fetch(`https://api-inference.huggingface.co/models/${encodeURIComponent(model)}`, {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
+        const res = await fetch(
+          `https://api-inference.huggingface.co/models/${encodeURIComponent(model)}`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              inputs: prompt,
+              parameters: parameters || {},
+            }),
+            signal: controller.signal,
           },
-          body: JSON.stringify({ inputs: prompt, parameters: parameters || {} }),
-          signal: controller.signal
-        });
+        );
 
         clearTimeout(id);
 
@@ -54,14 +66,20 @@ exports.handler = async function (event, context) {
           if (res.status === 401 || res.status === 429 || res.status >= 500) {
             continue;
           }
-          return { statusCode: 502, body: JSON.stringify({ error: `HF Error: ${res.status}`, details: text }) };
+          return {
+            statusCode: 502,
+            body: JSON.stringify({
+              error: `HF Error: ${res.status}`,
+              details: text,
+            }),
+          };
         }
 
         // Success: return raw body (string) and status 200
         return {
           statusCode: 200,
-          headers: { 'Content-Type': 'application/json' },
-          body: text
+          headers: { "Content-Type": "application/json" },
+          body: text,
         };
       } catch (err) {
         lastError = String(err?.message || err);
@@ -70,8 +88,17 @@ exports.handler = async function (event, context) {
       }
     }
 
-    return { statusCode: 502, body: JSON.stringify({ error: 'All HF tokens failed', details: lastError }) };
+    return {
+      statusCode: 502,
+      body: JSON.stringify({
+        error: "All HF tokens failed",
+        details: lastError,
+      }),
+    };
   } catch (err) {
-    return { statusCode: 500, body: JSON.stringify({ error: String(err?.message || err) }) };
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: String(err?.message || err) }),
+    };
   }
 };
