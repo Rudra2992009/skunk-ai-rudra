@@ -62,6 +62,14 @@ console.log(result);
             <p class="mt-2 text-slate-600 dark:text-slate-300">Seamless keyboard-first UX with reusable prompts and templates.</p>
           </article>
         </section>
+
+        <section id="credits" class="mt-14 max-w-3xl mx-auto text-center">
+          <div class="rounded-2xl border border-slate-200/70 dark:border-slate-800/70 bg-white/70 dark:bg-slate-900/40 p-6 backdrop-blur">
+            <h2 class="text-2xl font-semibold">Credits</h2>
+            <p class="mt-3 text-slate-600 dark:text-slate-300">Created by <strong>Rudra Pandey</strong>. Rudra began exploring AI programming as early as 7th grade and has grown his skills over the years. Now in 10th grade, Rudra built the core of Skunk AI — an assistant that blends sharp reasoning with a playful personality. This project celebrates curiosity, persistence, and a passion for building intelligent tools.</p>
+            <p class="mt-3 text-sm text-slate-500">If you'd like to collaborate or learn from Rudra's journey, get in touch using the contact links.</p>
+          </div>
+        </section>
       </div>
     </section>
   `,
