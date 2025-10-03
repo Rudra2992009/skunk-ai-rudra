@@ -225,6 +225,20 @@ export class PlaceholderPageComponent {
     conv.messages.push({ id: this.msgId++, role: 'user', text, time: this.now() });
     conv.updatedAt = this.now();
     this.input = '';
+
+    // Try to call Hugging Face if tokens are configured
+    const model = localStorage.getItem('hf_selected_model') || 'facebook/opt-125m';
+    const hfResp = await this.hf.generate(model, text, { maxTokens: 256 }).catch(() => ({ error: 'HF request failed' }));
+    if (hfResp && hfResp.text) {
+      // push assistant response from model
+      const msg: Message = { id: this.msgId++, role: 'assistant', text: hfResp.text, time: this.now() };
+      conv.messages.push(msg);
+      conv.updatedAt = this.now();
+      this.scrollToBottom();
+      return;
+    }
+
+    // Fallback to local simulated reply
     this.simulateAssistantResponse(text, conv);
     setTimeout(() => this.scrollToBottom(), 50);
   }
