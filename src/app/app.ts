@@ -8,6 +8,7 @@ import { RouterLink, RouterOutlet } from '@angular/router';
   styleUrl: './app.css'
 })
 export class App {
+  currentYear = new Date().getFullYear();
   theme = signal<'light' | 'dark' | 'system'>('system');
 
   constructor() {

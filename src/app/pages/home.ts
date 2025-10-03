@@ -36,7 +36,7 @@ import { RouterLink } from '@angular/router';
           <div class="p-4 sm:p-8 bg-slate-50/80 dark:bg-slate-950/30">
             <pre class="text-left text-[13px] leading-relaxed text-slate-800 dark:text-slate-100 overflow-auto"><code>
 const prompt = "Summarize this article in 3 bullet points";
-const result = await skunkAI.generate({ prompt, tone: "witty" });
+const result = await skunkAI.generate(&#123; prompt, tone: "witty" &#125;);
 console.log(result);
 // • Fast, accurate summaries
 // • A dash of personality
