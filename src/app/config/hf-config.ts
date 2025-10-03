@@ -1,8 +1,13 @@
-// Add your Hugging Face tokens here if you want them bundled locally (NOT recommended).
-// Replace the placeholder strings with your actual tokens, or use the Manage Tokens modal in the app.
-export const HF_TOKENS_FROM_CODE: string[] = [
-  'RUDRA_HERE_YOU_PASTE',
-];
+// Named Hugging Face token placeholders. Replace the values below with your real tokens.
+// IMPORTANT: Do NOT commit real tokens to version control.
+export const HF_TOKEN_1 = 'HF_TOKEN_1_REPLACE_ME';
+export const HF_TOKEN_2 = 'HF_TOKEN_2_REPLACE_ME';
+export const HF_TOKEN_3 = 'HF_TOKEN_3_REPLACE_ME';
+export const HF_TOKEN_4 = 'HF_TOKEN_4_REPLACE_ME';
+
+// HF_TOKENS_FROM_CODE is built from the above named tokens.
+// Replace each HF_TOKEN_* value above with your actual hf_... token string.
+export const HF_TOKENS_FROM_CODE: string[] = [HF_TOKEN_1, HF_TOKEN_2, HF_TOKEN_3, HF_TOKEN_4];
 
 // Open-source text models (no audio/video). Add or remove models as needed.
 export const HF_MODEL_LIST: { id: string; name: string }[] = [
