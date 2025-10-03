@@ -12,6 +12,13 @@
         <a routerLink="/playground" class="btn-ghost">Playground</a>
         <a routerLink="/playground" class="btn-primary ml-2">Launch App</a>
       </nav>
+      <div class="hidden md:flex items-center gap-3">
+        <label class="text-xs text-slate-500">Model</label>
+        <select [(ngModel)]="selectedModel" (change)="onModelChange($event)" class="rounded-md border px-2 py-1 bg-white/80 dark:bg-slate-900/60">
+          <option *ngFor="let m of models" [value]="m.id">{{m.name}}</option>
+        </select>
+        <button class="btn-ghost" (click)="tokenModalOpen = true">Manage Tokens</button>
+      </div>
       <div class="flex items-center gap-2">
         <button type="button" class="btn-ghost" (click)="toggleTheme()" aria-label="Toggle theme">
           <svg class="h-5 w-5 hidden dark:block" viewBox="0 0 24 24" fill="currentColor"><path d="M21.64 13a1 1 0 0 0-1.05-.14 8 8 0 1 1-9.45-9.45 1 1 0 0 0-.14-2A10 10 0 1 0 23 13.81a1 1 0 0 0-1.36-.81z"/></svg>
