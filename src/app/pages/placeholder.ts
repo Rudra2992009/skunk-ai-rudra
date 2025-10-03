@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { scrapeUrl } from '../services/web-scraper';
 
 interface Message {
   id: number;
@@ -202,10 +203,24 @@ export class PlaceholderPageComponent {
     this.sendMessage();
   }
 
-  sendMessage() {
+  async sendMessage() {
     const text = this.input.trim();
     if (!text || !this.activeConversation) return;
     const conv = this.activeConversation;
+
+    // Detect first URL in the message
+    const urlMatch = text.match(/https?:\/\/\S+/i);
+    if (urlMatch) {
+      // push the user's message
+      conv.messages.push({ id: this.msgId++, role: 'user', text, time: this.now() });
+      conv.updatedAt = this.now();
+      this.input = '';
+      // fetch the URL and insert content or a summary
+      await this.fetchUrlAndInsert(urlMatch[0], conv);
+      setTimeout(() => this.scrollToBottom(), 50);
+      return;
+    }
+
     conv.messages.push({ id: this.msgId++, role: 'user', text, time: this.now() });
     conv.updatedAt = this.now();
     this.input = '';
@@ -251,6 +266,47 @@ export class PlaceholderPageComponent {
       return 'Here is a friendly follow-up email:\n\nHi there,\n\nThanks for your time. I wanted to follow up on...\n\nBest regards,';
     }
     return "I\'m Skunk AI — I can summarize, rewrite, and reason. Try asking me to summarize a doc, write a short email, or explain a concept.";
+  }
+
+  // If a URL is provided, fetch and insert its content or a quick local summary
+  async fetchUrlAndInsert(url: string, conv: Conversation) {
+    // insert a system message about fetching
+    conv.messages.push({ id: this.msgId++, role: 'system', text: `Fetching content from ${url}...`, time: this.now() });
+    this.isTyping = true;
+    this.scrollToBottom();
+
+    const result = await scrapeUrl(url).catch((e) => ({ error: String(e) }));
+
+    // remove the last system fetching message
+    const lastIndex = conv.messages.findIndex((m) => m.role === 'system' && m.text.startsWith('Fetching content'));
+    if (lastIndex >= 0) conv.messages.splice(lastIndex, 1);
+
+    if (result.error) {
+      conv.messages.push({ id: this.msgId++, role: 'assistant', text: `Unable to fetch URL: ${result.error}`, time: this.now() });
+      this.isTyping = false;
+      this.scrollToBottom();
+      return;
+    }
+
+    const title = result.title || url;
+    const content = result.text || '';
+
+    // If model unavailable, we create a local summary from the content
+    const summary = this.localSummarize(content || `Content could not be extracted from ${url}`);
+
+    conv.messages.push({ id: this.msgId++, role: 'assistant', text: `Fetched: ${title}\n\n${summary}`, time: this.now() });
+    this.isTyping = false;
+    this.scrollToBottom();
+  }
+
+  // Very small, local summarizer: picks top sentences and returns 3 bullets
+  localSummarize(text: string) {
+    if (!text) return 'No extractable text found.';
+    // Split into sentences (naive) and pick the first few meaningful ones
+    const sentences = text.replace(/\n+/g, ' ').split(/(?<=[.!?])\s+/).map(s => s.trim()).filter(Boolean);
+    if (sentences.length === 0) return 'No extractable text found.';
+    const bullets = sentences.slice(0, 6).sort((a,b)=>b.length - a.length).slice(0,3);
+    return bullets.map(b => `• ${b}`).join('\n');
   }
 
   // Create a plain-text transcript from a conversation
