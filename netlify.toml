@@ -1,0 +1,10 @@
+[build]
+  base = "."
+  publish = "dist/fusion-angular-tailwind-starter"
+  command = "npm run build"
+
+[dev]
+  functions = "netlify/functions"
+
+[functions]
+  directory = "netlify/functions"
