@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { scrapeUrl } from '../services/web-scraper';
+import { HFModelService } from '../services/hf-model.service';
 
 interface Message {
   id: number;
