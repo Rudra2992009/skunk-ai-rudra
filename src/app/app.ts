@@ -1,5 +1,8 @@
 import { Component, signal } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+
+interface ModelOption { id: string; name: string; }
 
 @Component({
   selector: 'app-root',
