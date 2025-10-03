@@ -83,8 +83,8 @@ interface Conversation {
                 </div>
               </div>
               <div class="flex items-center gap-3">
-                <button class="btn-ghost">Share</button>
-                <button class="btn-ghost">Export</button>
+                <button class="btn-ghost" (click)="shareTranscript()">Share</button>
+                <button class="btn-ghost" (click)="exportTranscript()">Export</button>
               </div>
             </div>
 
@@ -251,6 +251,81 @@ export class PlaceholderPageComponent {
       return 'Here is a friendly follow-up email:\n\nHi there,\n\nThanks for your time. I wanted to follow up on...\n\nBest regards,';
     }
     return "I\'m Skunk AI — I can summarize, rewrite, and reason. Try asking me to summarize a doc, write a short email, or explain a concept.";
+  }
+
+  // Create a plain-text transcript from a conversation
+  generateTranscript(conv: Conversation) {
+    const header = `${conv.title} - Updated: ${conv.updatedAt}`;
+    const lines = conv.messages.map((m) => {
+      const who = m.role === 'user' ? 'User' : m.role === 'assistant' ? 'Skunk AI' : 'System';
+      return `[${m.time}] ${who}: ${m.text}`;
+    });
+    return `${header}\n\n${lines.join('\n\n')}\n`;
+  }
+
+  exportTranscript() {
+    const conv = this.activeConversation;
+    if (!conv) return;
+    const text = this.generateTranscript(conv);
+    const filename = `skunk-ai-${conv.id}-${new Date().toISOString().replace(/[:.]/g, '-')}.txt`;
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  async shareTranscript() {
+    const conv = this.activeConversation;
+    if (!conv) return;
+    const text = this.generateTranscript(conv);
+    const filename = `skunk-ai-${conv.id}-${new Date().toISOString().replace(/[:.]/g, '-')}.txt`;
+    const blob = new Blob([text], { type: 'text/plain' });
+    const file = new File([blob], filename, { type: 'text/plain' });
+
+    // Preferred: Web Share API with files
+    try {
+      const nav: any = navigator;
+      if (nav.share && nav.canShare && nav.canShare({ files: [file] })) {
+        await nav.share({ files: [file], title: conv.title, text: 'Skunk AI conversation' });
+        return;
+      }
+      // Fallback: share plain text via navigator.share
+      if (nav.share) {
+        await nav.share({ title: conv.title, text });
+        return;
+      }
+    } catch (err) {
+      console.warn('Share failed:', err);
+    }
+
+    // Final fallback: copy to clipboard and trigger download
+    try {
+      await this.copyToClipboard(text);
+    } catch (e) {
+      console.warn('Clipboard copy failed', e);
+    }
+    this.exportTranscript();
+    alert('Transcript downloaded and copied to clipboard. Use your device to share the file.');
+  }
+
+  async copyToClipboard(text: string) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise<void>((resolve) => {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      ta.remove();
+      resolve();
+    });
   }
 
   delay(ms: number) { return new Promise((r) => setTimeout(r, ms)); }
